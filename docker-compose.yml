@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/mydb  # MongoDB connection string
+      - REDIS_URL=redis://redis:6379
+      
+    ports:
+      - "4000:4000"  # Expose Node.js app on port 3000
+    depends_on:
+      - mongo
+      - redis
+    
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"  # Expose MongoDB on port 27017
+
+  redis:
+    image: redis/redis-stack  # Using Redis Stack image
+    container_name: redis
+    ports:
+      - "6379:6379"  # Expose Redis on port 6379
+      - '8001:8001'
+    
+
+volumes:
+  mongo-data:
+    driver: local
+
